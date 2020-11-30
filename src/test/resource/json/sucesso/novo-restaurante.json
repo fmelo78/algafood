@@ -1,0 +1,16 @@
+{
+    "nome": "Japinha",
+    "taxaFrete": 35.12,
+    "cozinha": {
+        "id": 2
+    },
+    "endereco": {
+        "cep": "0000-111",
+        "logradouro": "Avenida Cotovias",
+        "numero": "34",
+        "bairro": "Moema",
+        "cidade": {
+            "id": 1
+        }
+    }
+}
