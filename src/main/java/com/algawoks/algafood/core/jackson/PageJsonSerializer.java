@@ -19,7 +19,7 @@ public class PageJsonSerializer extends JsonSerializer<Page<?>>{
 //		Metadados da página, propriamente ditos
 		gen.writeObjectField("content", page.getContent());
 		gen.writeNumberField("size", page.getSize());
-		gen.writeNumberField("totalElemeents", page.getTotalElements());
+		gen.writeNumberField("totalElements", page.getTotalElements());
 		gen.writeNumberField("page", page.getNumber());
 		gen.writeNumberField("totalPages", page.getTotalPages());
 //		Fechamento do objeto que exibe os metadados da página

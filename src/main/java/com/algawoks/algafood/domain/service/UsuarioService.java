@@ -5,12 +5,12 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.algawoks.algafood.api.model.input.UsuarioSenhaInput;
+import com.algawoks.algafood.api.v1.model.input.UsuarioSenhaInput;
 import com.algawoks.algafood.domain.exception.NegocioException;
 import com.algawoks.algafood.domain.exception.SenhasDiferentesException;
 import com.algawoks.algafood.domain.exception.UsuarioNaoEncontradoException;
@@ -29,6 +29,9 @@ public class UsuarioService {
 	
 	@Autowired
 	private EntityManager entityManager;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public Usuario buscarOuFalhar(Long usuarioId) {
 		Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
@@ -42,6 +45,8 @@ public class UsuarioService {
 		if (usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)) {
 			throw new NegocioException(String.format("Já existe um usuário cadastrado com o email %s", usuario.getEmail()));
 		}
+		String pass = passwordEncoder.encode(usuario.getSenha());
+		usuario.setSenha(pass);
 		Usuario usuarioT1 = usuarioRepository.save(usuario);
 		return usuarioT1;
 	}
@@ -58,7 +63,7 @@ public class UsuarioService {
 		String senhaAtual = usuarioAtual.getSenha();
 		String senhaAtualInformada = usuarioSenha.getSenhaAtual();
 		String novaSenha = usuarioSenha.getNovaSenha();
-		if (StringUtils.equals(senhaAtual, senhaAtualInformada)) {
+		if (passwordEncoder.matches(senhaAtualInformada, senhaAtual)) {
 			usuarioAtual.setSenha(novaSenha);
 			salvar(usuarioAtual);
 		}
@@ -83,7 +88,5 @@ public class UsuarioService {
 		grupos.remove(grupo);
 		usuarioRepository.save(usuario);
 	}
-
-
 	
 }

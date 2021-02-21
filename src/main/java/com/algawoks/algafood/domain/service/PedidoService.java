@@ -21,7 +21,6 @@ import com.algawoks.algafood.domain.model.Restaurante;
 import com.algawoks.algafood.domain.model.StatusPedido;
 import com.algawoks.algafood.domain.model.Usuario;
 import com.algawoks.algafood.domain.repository.PedidoRepository;
-import com.algawoks.algafood.domain.service.EmailService.Mensagem;
 
 @Service
 public class PedidoService {
@@ -44,10 +43,6 @@ public class PedidoService {
 	@Autowired
 	private UsuarioService usuarioService;
 	
-	@Autowired
-	private EmailService emailService;
-	
-	
 	
 	public Pedido buscarOuFalhar (String codigo) {
 		Pedido pedido = (pedidoRepository.findByCodigo(codigo)).orElseThrow(() -> new PedidoNaoEncontradoException(
@@ -69,15 +64,9 @@ public class PedidoService {
 		Pedido pedido = buscarOuFalhar(codigoPedido);
 		pedido.setDataConfirmacao(OffsetDateTime.now());
 		alterarStatus(pedido, StatusPedido.CONFIRMADO);
+		pedido.registrarEventoPedidoConfirmado();
 		pedidoRepository.save(pedido);
 		
-//		Instanciamento da mensagem que será transmitida no email
-		var mensagem = Mensagem.builder()
-//				.assunto(pedido.getRestaurante().getNome() + " - Confirmação de pedido")
-				.corpo(String.format("O pedido de código <strong> %s </strong> foi confirmado", pedido.getCodigo()))
-				.destinatario(pedido.getCliente().getEmail())
-				.build();
-		emailService.enviar(mensagem);
 	}
 	
 	@Transactional
@@ -93,6 +82,7 @@ public class PedidoService {
 		Pedido pedido = buscarOuFalhar(codigoPedido);
 		pedido.setDataCancelamento(OffsetDateTime.now());
 		alterarStatus(pedido, StatusPedido.CANCELADO);
+		pedido.registrarEventoPedidoCancelado();
 		pedidoRepository.save(pedido);
 	}
 	

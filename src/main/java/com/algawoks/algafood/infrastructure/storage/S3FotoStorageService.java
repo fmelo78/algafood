@@ -5,7 +5,7 @@ import java.net.URL;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.algawoks.algafood.api.model.input.FotoProdutoInput;
+import com.algawoks.algafood.api.v1.model.input.FotoProdutoInput;
 import com.algawoks.algafood.core.storage.StorageProperties;
 import com.algawoks.algafood.domain.service.FotoStorageService;
 import com.algawoks.algafood.infrastructure.exception.StorageException;

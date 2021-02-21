@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.algawoks.algafood.api.exceptionhander.Problem.Field;
+import com.algawoks.algafood.core.security.AlgaSecurity;
 import com.algawoks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algawoks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algawoks.algafood.domain.exception.NegocioException;
@@ -34,11 +36,17 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	
 	@Autowired
 	private MessageSource messageSource;
+	
+	@Autowired
+	private AlgaSecurity algasecurity;
 	
 	private static final String MSG_ERRO_GENERICO_USUARIO_FINAL = "Ocorreu um erro de sistema interno e inesperado. "
 			+ "Tente novamente e se o erro persistir, entre em contato com o administrador do sistema.";
@@ -83,7 +91,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	
 	@ExceptionHandler (Exception.class)
 	private ResponseEntity<?> handleUncaughtException (Exception ex, WebRequest request) {
-		
+		log.error(ex.getMessage(), ex);
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 		ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
 		String detail = MSG_ERRO_GENERICO_USUARIO_FINAL;
@@ -94,9 +102,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	
 	@ExceptionHandler (ReportException.class)
 	public ResponseEntity<?> handleReportException(ReportException ex, WebRequest request){
+		log.error(ex.getMessage(), ex);
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 		ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
 		String detail = MSG_ERRO_GENERICO_USUARIO_FINAL;
+		Problem problema = gerarProblema(status, problemType, ex.getMessage(), detail, null);
+		return handleExceptionInternal(ex, problema, null, status, request);
+	}
+	
+	@ExceptionHandler (AccessDeniedException.class)
+	public ResponseEntity<?> handleReportException(AccessDeniedException ex, WebRequest request){
+		log.error(ex.getMessage(), ex);
+		HttpStatus status = HttpStatus.FORBIDDEN;
+		ProblemType problemType = ProblemType.ACESSO_NEGADO;
+		String detail = String.format("O usuário %s não possui permissão para executar essa operação", algasecurity.getUserName());
 		Problem problema = gerarProblema(status, problemType, ex.getMessage(), detail, null);
 		return handleExceptionInternal(ex, problema, null, status, request);
 	}

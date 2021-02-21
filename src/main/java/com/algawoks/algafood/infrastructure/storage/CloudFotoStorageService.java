@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.algawoks.algafood.api.model.input.FotoProdutoInput;
+import com.algawoks.algafood.api.v1.model.input.FotoProdutoInput;
 import com.algawoks.algafood.infrastructure.exception.StorageException;
 
 @Service

@@ -20,15 +20,19 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
+
+import com.algawoks.algafood.domain.event.PedidoCanceladoEvent;
+import com.algawoks.algafood.domain.event.PedidoConfirmadoEvent;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Table(name = "pedido")
-public class Pedido {
+public class Pedido extends AbstractAggregateRoot<Pedido>{
 	
 	@Id
 	@EqualsAndHashCode.Include
@@ -67,6 +71,13 @@ public class Pedido {
 	
 	@OneToMany (mappedBy = "pedido", cascade = CascadeType.ALL)
 	private List<ItemPedido> itens = new ArrayList<>();
-
+	
+	public void registrarEventoPedidoConfirmado() {
+		registerEvent(new PedidoConfirmadoEvent(this));
+	}
+	
+	public void registrarEventoPedidoCancelado() {
+		registerEvent(new PedidoCanceladoEvent(this));
+	}
 
 }

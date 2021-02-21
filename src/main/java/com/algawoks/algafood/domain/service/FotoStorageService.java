@@ -3,7 +3,7 @@ package com.algawoks.algafood.domain.service;
 import java.io.InputStream;
 import java.util.UUID;
 
-import com.algawoks.algafood.api.model.input.FotoProdutoInput;
+import com.algawoks.algafood.api.v1.model.input.FotoProdutoInput;
 
 import lombok.Builder;
 import lombok.Data;

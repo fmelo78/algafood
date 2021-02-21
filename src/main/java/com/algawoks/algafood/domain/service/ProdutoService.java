@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.algawoks.algafood.api.converter.ProdutoConverter;
-import com.algawoks.algafood.api.model.input.ProdutoInput;
+import com.algawoks.algafood.api.v1.converter.ProdutoConverter;
+import com.algawoks.algafood.api.v1.model.input.ProdutoInput;
 import com.algawoks.algafood.domain.exception.NegocioException;
 import com.algawoks.algafood.domain.exception.ProdutoNaoEncontradoException;
 import com.algawoks.algafood.domain.model.Produto;

@@ -1,5 +1,6 @@
 package com.algawoks.algafood.domain.service;
 
+import java.util.Map;
 import java.util.Set;
 
 import lombok.Builder;
@@ -10,6 +11,8 @@ import lombok.Singular;
 public interface EmailService {
 	
 	public void enviar(Mensagem mensagem);
+	
+	public String processarTemplate (Mensagem mensagem);
 	
 	@Data
 	@Builder
@@ -23,6 +26,9 @@ public interface EmailService {
 		
 		@NonNull
 		private String corpo;
+		
+		@Singular(value = "variavel")
+		private Map<String, Object> variaveis;
 	}
 
 }

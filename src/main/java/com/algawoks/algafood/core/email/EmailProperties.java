@@ -6,15 +6,31 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@Component
 @Validated
+@Getter 
+@Setter
+@Component
 @ConfigurationProperties (value = "algafood.email")
 public class EmailProperties {
 
+	private TipoEmail impl = TipoEmail.SANDBOX;
+
 	@NotNull
 	private String remetente;	
+		
+	private Sandbox sandbox = new Sandbox();
+	
+	public enum TipoEmail {
+		SMTP, FAKE, SANDBOX
+	}
+	
+	@Getter
+	@Setter
+	public class Sandbox {
+		private String destinatario;		
+	}
 	
 }

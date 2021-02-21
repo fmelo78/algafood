@@ -4,8 +4,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.algawoks.algafood.api.model.input.ItemPedidoInput;
-import com.algawoks.algafood.api.model.output.EnderecoOutput;
+import com.algawoks.algafood.api.v1.model.input.ItemPedidoInput;
+import com.algawoks.algafood.api.v1.model.output.EnderecoOutput;
+import com.algawoks.algafood.api.v2.model.input.CidadeInputV2;
+import com.algawoks.algafood.domain.model.Cidade;
 import com.algawoks.algafood.domain.model.Endereco;
 import com.algawoks.algafood.domain.model.ItemPedido;
 
@@ -26,6 +28,9 @@ public class ModelMapperConfiguration {
 		
 		modelMapper.createTypeMap(ItemPedidoInput.class, ItemPedido.class)
 	    	.addMappings(mapper -> mapper.skip(ItemPedido::setId));  
+		
+		modelMapper.createTypeMap(CidadeInputV2.class, Cidade.class)
+    		.addMappings(mapper -> mapper.skip(Cidade::setId));  
 		
 		return modelMapper;		
 	}
